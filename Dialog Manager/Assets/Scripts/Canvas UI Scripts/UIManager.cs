@@ -15,8 +15,8 @@ public class UIManager : MonoBehaviour
 
     public GameObject blackFade;
     private Image _blackFade;
-    public bool darkerThanBlack = false;
-    public bool whiterThanWhite = false;
+    public bool startingScene = false;
+    public bool endingScene = false;
     public float fadeInOutTime = 6f;
 
     void OnEnable()
@@ -41,11 +41,12 @@ public class UIManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-        if (darkerThanBlack)
+        if (startingScene)
             StartScene();
 
-        if (whiterThanWhite)
-            EndScene("null");
+        if (endingScene)
+            EndScene("null"); // need to have transitions with other scenes
+
 	}
 
     private void StartScene()
@@ -70,11 +71,11 @@ public class UIManager : MonoBehaviour
 
             _blackFade.enabled = false;
 
-            ActivateDialogueSystem(1);
+            ActivateDialogueSystem();
 
             // The scene is no longer starting.
 
-            darkerThanBlack = false;
+            startingScene = false;
 
         }
     }
@@ -102,7 +103,7 @@ public class UIManager : MonoBehaviour
             //Change the bg to setup new scene.
             SetBackground(Global.Instance.GetBG(id));
 
-            whiterThanWhite = false;
+            endingScene = false;
         }
 
 
@@ -132,12 +133,12 @@ public class UIManager : MonoBehaviour
         _background.sprite = ID;
     }
 
-    public void ActivateDialogueSystem(int ID)
+    public void ActivateDialogueSystem()
     {
         if (dialogueSystemActive) return;
         dialogueSystemActive = true;
         dialogueSystem.SetActive(true);
-        DialogueManager.Instance.InitializeNewScene(ID);
+        DialogueManager.Instance.InitializeNewScene();
     }
 
     public void DeActivateDialogueSystem()

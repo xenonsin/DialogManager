@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
@@ -81,19 +82,28 @@ public class DialogueManager : MonoBehaviour
 	
 	}
 
-    public void InitializeNewScene(int ConvoID)
+    public void InitializeNewScene()
     {
 
         //Get parsed line
         ClearHistroyAndCurrent();
-        SetPortrait(TestSprite);
-        SetNPCResponse(TestString);
-        SetCharacterResponses(TestResponses);
+
+        DisplayDialogue();
+        
     }
 
-    public void DisplayDialogue(int ConvoID)
+    public void DisplayDialogue()
     {
-        //get parsed line
+        Dialogue dialogue = GameManager.Instance.GetDialog(GameManager.Instance.NextDialogue);
+        SetPortrait(dialogue.Speaker.GetPortriat(dialogue.Speaker.Name));
+
+        if (dialogue.ChoiceText.Count == 0)
+            ClearCharResponse();
+        else
+            SetCharacterResponses(dialogue.ChoiceText);
+        
+        SetNPCResponse(dialogue.SpeakerText);
+        
     }
 
     public void EndDialogue()
@@ -101,16 +111,10 @@ public class DialogueManager : MonoBehaviour
         //switch scenes?
 
     }
-    public void SetNPCResponse(string text)
-    {
-        AddToHistory(_currentText.text);
-        _currentText.text = text;
-    }
 
-    public void SetNPCResponseWithNoCharResponse(string text)
+
+    public void ClearCharResponse()
     { 
-        AddToHistory(_currentText.text);
-        _currentText.text = text;
 
         SetEndDialogueButton();
 
@@ -128,15 +132,34 @@ public class DialogueManager : MonoBehaviour
     {
         continueButton.SetActive(true);
         _continueButtonText.text = "Continue";
-        continueButton.GetComponent<Button>().onClick.AddListener(() => DisplayDialogue(0));
+        continueButton.GetComponent<Button>().onClick.AddListener(() => DisplayDialogue()); // go to next
     }
 
     void SetEndDialogueButton()
     {
         continueButton.SetActive(true);
-        _continueButtonText.text = "End";
+        _continueButtonText.text = "End Dialogue";
         continueButton.GetComponent<Button>().onClick.AddListener(() => UIManager.Instance.DeActivateDialogueSystem());
     }
+
+
+    public void SetCharacterResponses(List<string> characterResponses)
+    {
+        continueButton.SetActive(false);
+        int numberOfResponses = 0;
+        foreach (var line in characterResponses)
+        {
+            GameObject newResponse = Instantiate(characterResponsePrefab) as GameObject;
+            newResponse.GetComponent<Text>().text = line;
+            //parse
+            //newResponse.GetComponent<Button>().onClick.AddListener(() => SetNPCResponseWithNoCharResponse("Go fuckyourself pinoy hobo."));
+            newResponse.transform.SetParent(contentPanel, false);
+            numberOfResponses++;
+        }
+
+        SetCurrentTextMinHeight(numberOfResponses);
+    }
+
 
     void SetCurrentTextMinHeight(int numberOfCharacterResponses)
     {
@@ -155,23 +178,6 @@ public class DialogueManager : MonoBehaviour
 
         _scrollRect.verticalScrollbar.value = 0;
         Canvas.ForceUpdateCanvases();
-    }
-
-    public void SetCharacterResponses(string[] characterResponses)
-    {
-        continueButton.SetActive(false);
-        int numberOfResponses = 0;
-        foreach (var line in characterResponses)
-        {
-            GameObject newResponse = Instantiate(characterResponsePrefab) as GameObject;
-            newResponse.GetComponent<Text>().text = line;
-            //test
-            newResponse.GetComponent<Button>().onClick.AddListener(() => SetNPCResponseWithNoCharResponse("Go fuckyourself pinoy hobo."));
-            newResponse.transform.SetParent(contentPanel, false);
-            numberOfResponses++;
-        }
-
-        SetCurrentTextMinHeight(numberOfResponses);
     }
 
     public void SetPortrait(Sprite img)
@@ -193,4 +199,9 @@ public class DialogueManager : MonoBehaviour
 
     }
 
+    public void SetNPCResponse(string text)
+    {
+        AddToHistory(_currentText.text);
+        _currentText.text = text;
+    }
 }

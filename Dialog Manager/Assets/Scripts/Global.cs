@@ -15,6 +15,12 @@ public class Global : MonoBehaviour
 
     //Cerise
     public Sprite[] CeriseSprites;
+    
+    //Camille
+    public Sprite[] CamilleSprites;
+
+    //Backgrounds
+    public Sprite[] BackGrounds;
 
     public Dictionary<string,Character> CharacterList = new Dictionary<string, Character>();
 
@@ -40,6 +46,16 @@ public class Global : MonoBehaviour
 
         InitializeHeima();
         InitializeCerise();
+        InitializeCamille();
+        InitializeBG();
+    }
+
+    void InitializeBG()
+    {
+        foreach (var backGround in BackGrounds)
+        {
+            BackgroundList.Add(backGround.name,backGround);
+        }
     }
 
     void InitializeHeima()
@@ -52,6 +68,12 @@ public class Global : MonoBehaviour
     {
         Character Cerise = new Character("Cerise", CeriseSprites);
         CharacterList.Add(Cerise.Name, Cerise);
+    }
+
+    void InitializeCamille()
+    {
+        Character Camille = new Character("Camille", CamilleSprites);
+        CharacterList.Add(Camille.Name, Camille);
     }
 
     public Character GetChar(string n)
