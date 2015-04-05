@@ -9,6 +9,7 @@ public class Dialogue
     public int ID { get; set; }
     public Character Speaker { get; set; }
 
+    public Sprite SpeakerSprite { get; set; }
 
     public Sprite BackGround { get; set; }
 

@@ -22,6 +22,8 @@ public class Global : MonoBehaviour
     //Backgrounds
     public Sprite[] BackGrounds;
 
+    public Dictionary<string, Sprite> SpriteList = new Dictionary<string, Sprite>();
+
     public Dictionary<string,Character> CharacterList = new Dictionary<string, Character>();
 
     public Dictionary<string,Sprite> BackgroundList = new Dictionary<string, Sprite>();
@@ -60,25 +62,40 @@ public class Global : MonoBehaviour
 
     void InitializeHeima()
     {
-        Character Heima = new Character("Heima", HeimaSprites);
-        CharacterList.Add(Heima.Name,Heima);
+        //Character Heima = new Character("Heima", HeimaSprites);
+        //CharacterList.Add("Heima", Heima);
+
+        foreach (Sprite sprite in HeimaSprites)
+        {
+            SpriteList.Add(sprite.name, sprite);
+        }
     }
 
     void InitializeCerise()
     {
-        Character Cerise = new Character("Cerise", CeriseSprites);
-        CharacterList.Add(Cerise.Name, Cerise);
+        //Character Cerise = new Character("Cerise", CeriseSprites);
+        //CharacterList.Add("Cerise", Cerise);
+        foreach (Sprite sprite in CeriseSprites)
+        {
+            SpriteList.Add(sprite.name, sprite);
+        }
     }
 
     void InitializeCamille()
     {
-        Character Camille = new Character("Camille", CamilleSprites);
-        CharacterList.Add(Camille.Name, Camille);
+        //Character Camille = new Character("Camille", CamilleSprites);
+        //CharacterList.Add("Camille", Camille);
+        foreach (Sprite sprite in CamilleSprites)
+        {
+            SpriteList.Add(sprite.name, sprite);
+        }
     }
 
     public Character GetChar(string n)
     {
-        return CharacterList.ContainsKey(n) ? CharacterList[n] : CharacterList["null"];
+        n.Trim();
+        string[] line = n.Split("-"[0]);
+        return CharacterList.ContainsKey(line[0]) ? CharacterList[line[0]] : CharacterList["null"];
     }
 
     public Sprite GetBG(string n)

@@ -45,7 +45,7 @@ public class UIManager : MonoBehaviour
             StartScene();
 
         if (endingScene)
-            EndScene("null"); // need to have transitions with other scenes
+            EndScene(); // need to have transitions with other scenes
 
 	}
 
@@ -80,7 +80,12 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void EndScene (string id)
+    public void GoToNewScene(int id)
+    {
+        startingScene = true;
+    }
+
+    public void EndScene ()
 
     {
 
@@ -101,7 +106,6 @@ public class UIManager : MonoBehaviour
         if (_blackFade.color.a >= .99f)
         {
             //Change the bg to setup new scene.
-            SetBackground(Global.Instance.GetBG(id));
 
             endingScene = false;
         }
@@ -138,7 +142,7 @@ public class UIManager : MonoBehaviour
         if (dialogueSystemActive) return;
         dialogueSystemActive = true;
         dialogueSystem.SetActive(true);
-        DialogueManager.Instance.InitializeNewScene();
+        DialogueManager.Instance.InitializeNewScene(GameManager.Instance.CurrentDialogue);
     }
 
     public void DeActivateDialogueSystem()

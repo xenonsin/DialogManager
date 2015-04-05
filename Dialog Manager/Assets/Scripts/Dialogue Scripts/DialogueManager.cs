@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -82,29 +83,50 @@ public class DialogueManager : MonoBehaviour
 	
 	}
 
-    public void InitializeNewScene()
+    public void InitializeNewScene(int id)
     {
 
         //Get parsed line
         ClearHistroyAndCurrent();
 
-        DisplayDialogue();
+        DisplayDialogue(id);
+
+        
         
     }
 
-    public void DisplayDialogue()
+    public void DisplayDialogue(int id)
     {
-        Dialogue dialogue = GameManager.Instance.GetDialog(GameManager.Instance.NextDialogue);
-        SetPortrait(dialogue.Speaker.GetPortriat(dialogue.Speaker.Name));
+        Dialogue dialogue = GameManager.Instance.GetDialog(id);
+        SetPortrait(dialogue.SpeakerSprite);
 
-        if (dialogue.ChoiceText.Count == 0)
-            ClearCharResponse();
-        else
-            SetCharacterResponses(dialogue.ChoiceText);
-        
         SetNPCResponse(dialogue.SpeakerText);
         
+       
+        if (dialogue.ChoiceText.Count == 1)
+            CharacterDoesNotHaveAResponse(dialogue);          
+        else
+            CharacterHasAResponse(dialogue);
+            
+
     }
+
+    void CharacterHasAResponse(Dialogue d)
+    {
+        SetCharacterResponses(d.ChoiceText, d.ChoiceFunc);
+    }
+
+    void CharacterDoesNotHaveAResponse(Dialogue d)
+    {
+        string func = d.ChoiceFunc[0].Trim();
+        ClearCharResponse();
+
+        string resultString = Regex.Match(func, @"\d+").Value;
+        int nextScene = Int32.Parse(resultString);
+        if (func.Contains("Next"))         
+            SetContinueDialogueButton(nextScene);
+    }
+
 
     public void EndDialogue()
     {
@@ -116,7 +138,7 @@ public class DialogueManager : MonoBehaviour
     public void ClearCharResponse()
     { 
 
-        SetEndDialogueButton();
+        //SetEndDialogueButton();
 
         foreach (Transform child in contentPanel)
         {
@@ -128,22 +150,25 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    void SetContinueDialogueButton()
+    void SetContinueDialogueButton(int nextScene)
     {
+        Canvas.ForceUpdateCanvases();
         continueButton.SetActive(true);
         _continueButtonText.text = "Continue";
-        continueButton.GetComponent<Button>().onClick.AddListener(() => DisplayDialogue()); // go to next
+        continueButton.GetComponent<Button>().onClick.AddListener(() => DisplayDialogue(nextScene)); // go to next
     }
 
     void SetEndDialogueButton()
     {
+        Canvas.ForceUpdateCanvases();
         continueButton.SetActive(true);
         _continueButtonText.text = "End Dialogue";
         continueButton.GetComponent<Button>().onClick.AddListener(() => UIManager.Instance.DeActivateDialogueSystem());
     }
 
+    //void ParseNumbersFromString (string[])
 
-    public void SetCharacterResponses(List<string> characterResponses)
+    public void SetCharacterResponses(List<string> characterResponses, List<string> characterFuncs)
     {
         continueButton.SetActive(false);
         int numberOfResponses = 0;
@@ -151,8 +176,13 @@ public class DialogueManager : MonoBehaviour
         {
             GameObject newResponse = Instantiate(characterResponsePrefab) as GameObject;
             newResponse.GetComponent<Text>().text = line;
-            //parse
-            //newResponse.GetComponent<Button>().onClick.AddListener(() => SetNPCResponseWithNoCharResponse("Go fuckyourself pinoy hobo."));
+
+            string resultString = Regex.Match(characterFuncs[numberOfResponses], @"\d+").Value;
+            Debug.Log(line);
+            int nextScene = Int32.Parse(resultString);
+
+            newResponse.GetComponent<Button>().onClick.AddListener(() => DisplayDialogue(nextScene));
+
             newResponse.transform.SetParent(contentPanel, false);
             numberOfResponses++;
         }
@@ -187,7 +217,7 @@ public class DialogueManager : MonoBehaviour
 
     public void AddToHistory(string text)
     {
-        if (_currentText.text != "")
+        if (text != "")
             _historyText.text += "\n" + text + "\n";
         
     }
@@ -195,7 +225,7 @@ public class DialogueManager : MonoBehaviour
     public void ClearHistroyAndCurrent()
     {
         _currentText.text = "";
-        _historyText.text = null;
+        _historyText.text = "";
 
     }
 

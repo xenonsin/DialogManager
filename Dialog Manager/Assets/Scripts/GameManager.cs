@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public int startingDialogue = 3;
     public int CurrentDialogue = 3;
 
-    public int NextDialogue { get; set; }
+    public int NextDialogue = 4;
 
     public TextAsset CsvAsset;
     public bool Ready;
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
         string[,] grid = CSVReader.SplitCsvGrid(CsvAsset.text);
 
 
-        for (int y = 0; y < grid.GetUpperBound(1); y++)
+        for (int y = 3; y < grid.GetUpperBound(1); y++)
         {
             Dialogue newDialogue = new Dialogue();
             
@@ -76,7 +76,8 @@ public class GameManager : MonoBehaviour
                     switch (x)
                     {
                         case 0:
-                            newDialogue.Speaker = Global.Instance.GetChar(temp);
+                            if (Global.Instance.SpriteList.ContainsKey(temp))
+                                newDialogue.SpeakerSprite = Global.Instance.SpriteList[temp];
                             break;
                         case 1:
                             int parsedInt = 0;
@@ -99,10 +100,12 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
-
-            DialogueList.Add(newDialogue.ID, newDialogue);
+            if (!DialogueList.ContainsKey(newDialogue.ID))
+            {
+                DialogueList.Add(newDialogue.ID, newDialogue);
+            }
         }
-        Debug.Log("hi");
+        
         Ready = true;
     }
 
