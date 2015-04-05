@@ -81,7 +81,7 @@ public class DialogueManager : MonoBehaviour
 	
 	}
 
-    public void InitializeNewConversation(string ConvoID)
+    public void InitializeNewScene(int ConvoID)
     {
 
         //Get parsed line
