@@ -101,6 +101,8 @@ public class DialogueManager : MonoBehaviour
         SetPortrait(dialogue.SpeakerSprite);
 
         SetNPCResponse(dialogue.SpeakerText);
+
+        UIManager.Instance.SetBackground(dialogue.BackGround);
         
        
         if (dialogue.ChoiceText.Count == 1)
@@ -113,6 +115,7 @@ public class DialogueManager : MonoBehaviour
 
     void CharacterHasAResponse(Dialogue d)
     {
+        ClearCharResponse();
         SetCharacterResponses(d.ChoiceText, d.ChoiceFunc);
     }
 

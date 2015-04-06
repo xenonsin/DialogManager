@@ -29,4 +29,10 @@ Cerise - Happy	27	Hallway - 1	As you and Cerise reach the end of the hallway, th
 Heima - Neutral	28	Jail Cell	Cerise made a disgusted face and scoffs at you. You shrug and head to bed, exhausted from everything. When you woke up you realize that you were the only one left in the room. A guard appeared with a man that was thrown into the same cell as you.		Next(28)
 Heima - Panic	29	Jail Cell	The man was incredibly huge, almost 7 feet tall and looks like he could lift 300 lbs.  The man looks at you and smirks. "Hey there pretty boy, time for your punishment."  You panic, realizing the fate you must endure. You were raped and unfortunately was not alive afterwards. At least you didn't really die as a virgin. GAME OVER.		End()
 Heima - Worried	30	Jail Cell	"I was wondering if you would also help rescue my friend... I don't know where they are but I just know they are here, alive, somewhere..."		Next(31)
-Cerise - Smile	31	Jail Cell			
+Cerise - Smile	31	Jail Cell	"I'll take that challenge!" she said excitingly		Next(30)
+Heima - Angry	32	Hallway	You hear faint screaming coming from the right side of the hallway.  "That's her! That's my friend Camille! Let's follow the screams, I wonder what's going on..."  You and Cerise walked for another 5 minutes, following the screams that got louder and louder. 		Next(33)
+Heima - Angry	33	Experiment room			
+					
+					
+					
+Camille - Happy		Hallway			
